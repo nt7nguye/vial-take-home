@@ -9,7 +9,13 @@ export interface ButtonProps {
 
 const CalcButton: React.FC<ButtonProps> = ({className, value, onClick}) => {
     return (
-        <Button className={className} value={value} onClick={onClick}>
+        <Button 
+            className={className} 
+            value={value} 
+            onClick={onClick}
+            sx={{
+                borderRadius: 5
+            }}>
             {value}
         </Button>
     );

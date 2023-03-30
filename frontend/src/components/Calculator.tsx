@@ -3,13 +3,15 @@ import Screen from "./Screen";
 import ButtonBox from "./ButtonBox";
 import {ButtonProps} from "./Button";
 import Evaluator from "../evaluator/evaluator";
-
+import { Box } from "@mui/system";
+import { Grid, Paper, Typography } from "@mui/material";
+import CalcButton from "./Button";
 
 const Calculator: React.FC<{}> = () => {
     const evaluator = new Evaluator();
     // Core state of the calculator
     const [expr, setExpr] = React.useState("");
-    const [result, setResult] = React.useState("");
+    const [prevExpr, setPrevExpr] = React.useState("");
 
     //TODO
     const [register, setRegister] = React.useState(0);
@@ -103,9 +105,10 @@ const Calculator: React.FC<{}> = () => {
     const equalClickHandler = () => {
         try {
             let res = evaluator.evaluate(expr);
-            setResult(res.toString());
+            setPrevExpr(expr);
+            setExpr(res.toString());
         } catch (err: any) {
-            setResult(err.message);
+            setPrevExpr(err.message);
         }
     };
 
@@ -117,7 +120,7 @@ const Calculator: React.FC<{}> = () => {
 
     const clearClickHandler = () => {
         setExpr("");
-        setResult("");
+        setPrevExpr("");
         setDotExistInExpr(false);
         setExpectValue(true);
         // TODO: Save history
@@ -141,10 +144,38 @@ const Calculator: React.FC<{}> = () => {
 
 
     return (
-        <div className="calculator">
-            <Screen expr={expr} result={result} />
-            <ButtonBox buttons={buttons} />
-        </div>
+        <Box
+            sx={{
+                marginTop: 8,
+                flexDirection: 'column',
+                alignItems: 'center',
+            }}
+        >
+            <Grid container minWidth={600}>
+                <Grid item xs={12}>
+                    <Paper
+                        sx={{
+                            p: 2,
+                            width: "100%",
+                            alignItems: 'right',
+                            backgroundColor: "#191f2f",
+                            height: 100,
+                            borderRadius: 5,
+                        }}
+                    >
+                        <Typography component="h1" variant="h6" align="right">{prevExpr}</Typography>
+                        <Typography component="h1" variant="h4" align="right">{expr}</Typography>
+                    </Paper>
+                </Grid>
+                <Grid container sx={{ backgroundColor: "#242d44", marginTop: 3, borderRadius: 5}}>
+                    <Grid item xs={3}> <CalcButton {...equalButtonProps}/> </Grid>
+                    <Grid item xs={3}> <CalcButton {...equalButtonProps}/> </Grid>
+                    <Grid item xs={3}> <CalcButton {...equalButtonProps}/> </Grid>
+                    <Grid item xs={3}> <CalcButton {...equalButtonProps}/> </Grid>
+                </Grid>
+            </Grid>
+
+        </Box> 
     )
 }
 
