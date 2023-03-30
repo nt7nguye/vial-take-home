@@ -67,6 +67,9 @@ class Parser {
             case "%":
                 this.token.type = TokenType.Percentage;
                 break;
+            case "^":
+                this.token.type = TokenType.Power;
+                break;
             case "√":
                 this.token.type = TokenType.SquareRoot;
                 break;
@@ -147,6 +150,11 @@ class Parser {
             this.getNextToken();
             let t1node = this.term1();
             return this.createBinaryNode(ASTNodeType.OperatorDiv, t1node, this.createNumberNode(100));
+        } else if (this.token.type == TokenType.Power) {
+            this.getNextToken();
+            let fnode = this.factor();
+            let t1node = this.term1();
+            return this.createBinaryNode(ASTNodeType.OperatorPower, t1node, fnode);
         } else {
             return this.createNumberNode(1);
         }

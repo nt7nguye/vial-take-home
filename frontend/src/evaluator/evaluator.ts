@@ -12,8 +12,21 @@ class Evaluator {
 
     private evaluateAST(node: ASTNode | null): number {
         if (node == null) {
-            throw new Error("Invalid AST tree");
-        } else if (node.type == ASTNodeType.NumberValue) {
+            throw new Error("Invalid AST tree");   
+        }
+        
+        // Special case for power operator
+        // It's the only binary operator that is not commutative
+        // So we need to check if the left or right node is a power operator
+        if (node.right != null && node.right.type == ASTNodeType.OperatorPower) {
+            node.right.type = ASTNodeType.OperatorMult;
+            return Math.pow(this.evaluateAST(node.left), this.evaluateAST(node.right));
+        } else if (node.left != null && node.left.type === ASTNodeType.OperatorPower) {
+            node.left.type = ASTNodeType.OperatorMult;
+            return Math.pow(this.evaluateAST(node.right), this.evaluateAST(node.left));
+        };
+
+        if (node.type == ASTNodeType.NumberValue) {
             return node.value;
         } else if (node.type == ASTNodeType.UnaryMinus) {
             return -this.evaluateAST(node.left);
