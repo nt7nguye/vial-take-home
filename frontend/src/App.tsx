@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import  Calculator  from './components/Calculator'
+import  Calculator  from './components/calculator/Calculator'
 import './App.css'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material'
 import { Container } from '@mui/material'
-import NavBar from './components/NavBar';
+import NavBar from './components/calculator/NavBar';
 
 const App: React.FC = () => {
   const theme = createTheme({ 
