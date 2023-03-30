@@ -58,18 +58,26 @@ const Calculator: React.FC<{}> = () => {
     };
     
     // TODO: Separate square root out (it's unary operator)
-    const signs = ["+", "-", "*", "/", "%", "^", "√"];
+    const signs = ["+", "-", "*", "/", "^", "√"];
     const signButtonProps: ButtonProps[] = signs.map((sign) => ({
         className: "signButton",
         value: sign,
         onClick: () => signClickHandler(sign),
     }));
 
-    // const percentageButtonProps: ButtonProps = {
-    //     className: "signButton",
-    //     value: "%",
-    //     onClick: () => percentageClickHandler(),
-    // }
+    const percentageClickHandler = () => {
+        if (expectValue) {
+            return;
+        } else {
+            setExpr(expr + "%");
+        }
+    };
+
+    const percentageButtonProps: ButtonProps = {
+        className: "signButton",
+        value: "%",
+        onClick: () => percentageClickHandler(),
+    }
 
     const equalClickHandler = () => {
         try {
@@ -105,6 +113,7 @@ const Calculator: React.FC<{}> = () => {
         dotButtonProps,
         equalButtonProps,
         clearButtonProps,
+        percentageButtonProps
     ];
 
 

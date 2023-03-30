@@ -5,7 +5,6 @@ export enum ASTNodeType{
     OperatorMult,
     OperatorDiv,
     UnaryMinus,
-    UnaryPercentage,
     UnarySquareRoot,
     NumberValue,
 }

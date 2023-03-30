@@ -1,5 +1,4 @@
 import ASTNode, { ASTNodeType } from "./ast";
-import Token, { TokenType } from "./token";
 import Parser from "./parser";
 
 class Evaluator {
