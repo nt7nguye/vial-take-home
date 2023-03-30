@@ -1,10 +1,8 @@
 import * as React from "react";
-import Screen from "./Screen";
-import ButtonBox from "./ButtonBox";
 import {ButtonProps} from "./Button";
 import Evaluator from "../evaluator/evaluator";
 import { Box } from "@mui/system";
-import { Grid, Paper, Typography } from "@mui/material";
+import { Grid, Paper, Typography, Popover, Button } from "@mui/material";
 import CalcButton from "./Button";
 
 const Calculator: React.FC<{}> = () => {
@@ -54,7 +52,7 @@ const Calculator: React.FC<{}> = () => {
     }));
 
     const dotButtonProps: ButtonProps = {
-        className: "valueButton",
+        type: "valueButton",
         value: ".",
         onClick: () => dotClickHandler(),
     };
@@ -75,7 +73,7 @@ const Calculator: React.FC<{}> = () => {
     };
 
     const percentageButtonProps: ButtonProps = {
-        className: "signButton",
+        type: "signButton",
         value: "%",
         onClick: () => percentageClickHandler(),
     }
@@ -113,7 +111,7 @@ const Calculator: React.FC<{}> = () => {
     };
 
     const equalButtonProps: ButtonProps = {
-        className: "equalButton",
+        type: "equalButton",
         value: "=",
         onClick: () => equalClickHandler(),
     };
@@ -123,25 +121,20 @@ const Calculator: React.FC<{}> = () => {
         setPrevExpr("");
         setDotExistInExpr(false);
         setExpectValue(true);
-        // TODO: Save history
     };
 
     const clearButtonProps: ButtonProps = {
-        className: "clearButton",
+        type: "clearButton",
         value: "C",
         onClick: () => clearClickHandler(),
-    };
+    }; 
 
-    const buttons: ButtonProps[] = [
-        ...valueButtonProps,
-        ...signButtonProps,
-        dotButtonProps,
-        equalButtonProps,
-        percentageButtonProps,
-        ...bracketButtonProps,
-        clearButtonProps,
-    ];
-
+    const [open, setOpen] = React.useState(false);
+    const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+    const popoverClickHandler = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event?.currentTarget);
+        setOpen(!open);
+    }
 
     return (
         <Box
@@ -151,7 +144,34 @@ const Calculator: React.FC<{}> = () => {
                 alignItems: 'center',
             }}
         >
-            <Grid container minWidth={600}>
+            <Grid container maxWidth={550}>
+                <Grid item xs={12}>
+                    <Box 
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            padding: 2,
+                        }}
+                    >
+                        <Typography component="h1" variant="h3" align="left">Calculator</Typography>
+                        <Button variant="contained" onClick={popoverClickHandler}> History</Button>
+                        <Popover
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            open={open}
+                            anchorEl={anchorEl}
+                        >
+                            "Test"
+                        </Popover>
+                    </Box>
+                </Grid>
                 <Grid item xs={12}>
                     <Paper
                         sx={{
@@ -167,14 +187,43 @@ const Calculator: React.FC<{}> = () => {
                         <Typography component="h1" variant="h4" align="right">{expr}</Typography>
                     </Paper>
                 </Grid>
-                <Grid container sx={{ backgroundColor: "#242d44", marginTop: 3, borderRadius: 5}}>
-                    <Grid item xs={3}> <CalcButton {...equalButtonProps}/> </Grid>
-                    <Grid item xs={3}> <CalcButton {...equalButtonProps}/> </Grid>
-                    <Grid item xs={3}> <CalcButton {...equalButtonProps}/> </Grid>
-                    <Grid item xs={3}> <CalcButton {...equalButtonProps}/> </Grid>
+                <Grid container xs={12} sx={{ backgroundColor: "#242d44", marginTop: 3, padding: 3, borderRadius: 5}}>
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                        
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...equalButtonProps} />
                 </Grid>
             </Grid>
-
         </Box> 
     )
 }

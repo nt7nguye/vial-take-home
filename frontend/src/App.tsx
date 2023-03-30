@@ -16,9 +16,8 @@ const App: React.FC = () => {
       text: {
         primary: '#e0e0e0',
       },
-      
-    },
-  });
+    }
+});
 
   return (
     <ThemeProvider theme={theme}>
