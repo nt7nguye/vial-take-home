@@ -5,13 +5,18 @@ import { Box } from "@mui/system";
 import { Grid, Paper, Typography, Popover, Button } from "@mui/material";
 import CalcButton from "./Button";
 
+interface Equation {
+    expression: string;
+    result: string;
+}
+
 const Calculator: React.FC<{}> = () => {
     const evaluator = new Evaluator();
     // Core state of the calculator
     const [expr, setExpr] = React.useState<string>("");
     const [prevExpr, setPrevExpr] = React.useState<string>("");
     const [register, setRegister] = React.useState<number>(0);
-    const [history, setHistory] = React.useState();
+    const [history, setHistory] = React.useState<Equation[]>([]);
 
     // Validity checks for the expression
     const [dotExistInExpr, setDotExistInExpr] = React.useState(false);
@@ -127,6 +132,7 @@ const Calculator: React.FC<{}> = () => {
     const equalClickHandler = () => {
         try {
             let res = evaluator.evaluate(expr);
+            setHistory([...history, {expression: expr, result: res.toString()}]);
             setPrevExpr(expr);
             setExpr(res.toString());
         } catch (err: any) {
@@ -188,7 +194,7 @@ const Calculator: React.FC<{}> = () => {
                         }}
                     >
                         <Typography component="h1" variant="h3" align="left">Calculator</Typography>
-                        <Button variant="contained" onClick={popoverClickHandler}> History</Button>
+                        <Button variant="contained" onClick={popoverClickHandler}> History </Button>
                         <Popover
                             anchorOrigin={{
                                 vertical: 'bottom',
@@ -199,9 +205,32 @@ const Calculator: React.FC<{}> = () => {
                                 horizontal: 'left',
                             }}
                             open={open}
+                            onClose={popoverClickHandler}
                             anchorEl={anchorEl}
+                            PaperProps={{
+                                sx: { backgroundColor: "#242d44", borderRadius: 3},
+                            }}
                         >
-                            "Test"
+                            <Grid container minWidth={200}>
+                                {history.length > 0 ? history.map((equation, index) => (
+                                        <Grid container spacing={1} sx={{margin: 1}}>
+                                            <Grid item sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}} key={index}>
+                                                <Button variant="contained" onClick={() => setExpr(equation.expression)}>{equation.expression}</Button>
+                                            </Grid>
+                                            <Grid item sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}} key={index}>
+                                                <Typography component="h1" variant="h6" align="left"> = </Typography> 
+                                            </Grid>
+                                            <Grid item sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}} key={index}>
+                                                <Button variant="contained" onClick={() => setExpr(equation.result)}>{equation.result}</Button>
+                                            </Grid>
+                                        </Grid>
+                                    ))
+                                : (
+                                    <Grid item xs={12} sx={{display: 'flex', flexDirection: 'row', height: 60, alignItems:'center', alignContent:'center'}}>
+                                        <Typography component="h1" variant="h6" align="center" width={150}>No history</Typography>
+                                    </Grid>
+                                )}
+                            </Grid>
                         </Popover>
                     </Box>
                 </Grid>
