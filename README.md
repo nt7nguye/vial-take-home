@@ -1,5 +1,13 @@
 # Calculator app
 
+## All functionalities required
+
+
+https://user-images.githubusercontent.com/45516852/228969513-5bd58f1f-244f-4548-81df-67164b184d49.mp4
+
+
+## I also found a bug in Google's calculator (2 * 1 + 1%) = 2.01 not 2.02. Although my implementaion is definitely not bug free (not handling division by zero comes to mind), I'm pretty happy to say I beat Google :D. Hopefully I can get some spare change if I report this for bug bounty.
+
 ## Techstack: React TypeScript for frontend and auth in Python backend
 
 ## Frontend under /frontend
