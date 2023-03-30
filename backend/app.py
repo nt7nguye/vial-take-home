@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 app = Flask(__name__)
+cors = CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///auth.db'  # change as needed
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -17,7 +19,7 @@ class User(db.Model):
 @app.route('/signIn', methods=['POST'])
 def signIn():
     data = request.get_json()
-    username = data.get('username')
+    username = data.get('email')
     password = data.get('password')
     user = User.query.filter_by(username=username, password=password).first()
     if user:
@@ -28,7 +30,7 @@ def signIn():
 @app.route('/signUp', methods=['POST'])
 def signUp():
     data = request.get_json()
-    username = data.get('username')
+    username = data.get('email')
     password = data.get('password')
     user = User.query.filter_by(username=username).first()
     if user:
