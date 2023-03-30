@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 
 interface NavbarProps {
-    username: string | null;
+    username: string;
     onSignOut: () => void;
 }
 
@@ -18,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ username, onSignOut }) => {
                     <Typography variant="h6">
                         Sin / Cos = Tan
                     </Typography>
-                    {username !== null ? (
+                    {username !== "" ? (
                         <div style={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
                         <Typography variant="subtitle1" style={{ marginRight: '16px' }}>
                             Signed in as {username}

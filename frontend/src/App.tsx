@@ -6,6 +6,11 @@ import { CssBaseline } from '@mui/material'
 import { Container } from '@mui/material'
 import NavBar from './components/calculator/NavBar';
 
+interface User {
+  email: string;
+  token: string;
+}
+
 const App: React.FC = () => {
   const theme = createTheme({ 
     palette: {
@@ -18,9 +23,12 @@ const App: React.FC = () => {
     }
   });
 
-  const [user, setUser] = useState<string | null>(null)
+  const [user, setUser] = useState<User>({email: "", token: ""})
   const signOutHandler = () => {
-    console.log("sign out")
+    setUser({
+      email:"",
+      token:""
+    })
   }
 
   return (
