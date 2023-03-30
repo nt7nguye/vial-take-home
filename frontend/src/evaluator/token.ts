@@ -5,7 +5,7 @@ export enum TokenType {
     Mult,
     Div,
     Percentage,
-    SquareRoot, // kinda hard to figure out where it ends have to imlement brackets
+    SquareRoot, 
     OpenParen,
     ClosedParen,
     Number,

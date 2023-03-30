@@ -17,6 +17,8 @@ class Evaluator {
             return node.value;
         } else if (node.type == ASTNodeType.UnaryMinus) {
             return -this.evaluateAST(node.left);
+        } else if (node.type == ASTNodeType.UnarySquareRoot) {
+            return Math.sqrt(this.evaluateAST(node.left));
         } else {
             let left = this.evaluateAST(node.left);
             let right = this.evaluateAST(node.right);

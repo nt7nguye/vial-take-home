@@ -67,6 +67,9 @@ class Parser {
             case "%":
                 this.token.type = TokenType.Percentage;
                 break;
+            case "√":
+                this.token.type = TokenType.SquareRoot;
+                break;
             case "(":
                 this.token.type = TokenType.OpenParen;
                 break;
@@ -162,13 +165,9 @@ class Parser {
         } else if (this.token.type == TokenType.Minus) {
             this.getNextToken();
             return this.createUnaryNode(ASTNodeType.UnaryMinus, this.factor());
-        // TODO
-        // } else if (this.token.type == TokenType.Percentage) {
-        //     this.GetNextToken();
-        //     return this.CreateUnaryNode(ASTNodeType.UnaryPercentage, this.Factor());
-        // } else if (this.token.type == TokenType.SquareRoot) {
-        //     this.GetNextToken();
-        //     return this.CreateUnaryNode(ASTNodeType.UnarySquareRoot, this.Factor());
+        } else if (this.token.type == TokenType.SquareRoot) {
+            this.getNextToken();
+            return this.createUnaryNode(ASTNodeType.UnarySquareRoot, this.factor());
         } else if (this.token.type == TokenType.EOF) {
             return this.createNumberNode(0);
         } else {

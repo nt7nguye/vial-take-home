@@ -29,7 +29,7 @@ const Calculator: React.FC<{}> = () => {
     }
 
     const signClickHandler = (sign: string) => {
-        if (expectValue) {
+        if (expectValue && sign !== "-" && sign !== "√") {
             return;
         }
         setExpr(expr + sign);
@@ -57,7 +57,6 @@ const Calculator: React.FC<{}> = () => {
         onClick: () => dotClickHandler(),
     };
     
-    // TODO: Separate square root out (it's unary operator)
     const signs = ["+", "-", "*", "/", "^", "√"];
     const signButtonProps: ButtonProps[] = signs.map((sign) => ({
         className: "signButton",
@@ -79,6 +78,28 @@ const Calculator: React.FC<{}> = () => {
         onClick: () => percentageClickHandler(),
     }
 
+    const brackets = ["(", ")"];
+    const bracketClickHandler = (bracket: string) => {
+        if (bracket === "(") {
+            setParenthesisBalance(parenthesisBalance + 1);
+            setExpr(expr + bracket);
+        } else if (bracket === ")") {
+            if (parenthesisBalance > 0) {
+                setParenthesisBalance(parenthesisBalance - 1);
+                setExpr(expr + bracket);
+            } else {
+                return;
+            }
+            setExpr(expr + bracket);
+        }
+    };
+    
+    const bracketButtonProps: ButtonProps[] = brackets.map((bracket) => ({
+        className: "signButton",
+        value: bracket,
+        onClick: () => bracketClickHandler(bracket),
+    }));
+
     const equalClickHandler = () => {
         try {
             let res = evaluator.evaluate(expr);
@@ -99,6 +120,7 @@ const Calculator: React.FC<{}> = () => {
         setResult("");
         setDotExistInExpr(false);
         setExpectValue(true);
+        // TODO: Save history
     };
 
     const clearButtonProps: ButtonProps = {
@@ -112,8 +134,9 @@ const Calculator: React.FC<{}> = () => {
         ...signButtonProps,
         dotButtonProps,
         equalButtonProps,
+        percentageButtonProps,
+        ...bracketButtonProps,
         clearButtonProps,
-        percentageButtonProps
     ];
 
 
