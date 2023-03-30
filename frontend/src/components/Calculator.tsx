@@ -8,61 +8,51 @@ import CalcButton from "./Button";
 const Calculator: React.FC<{}> = () => {
     const evaluator = new Evaluator();
     // Core state of the calculator
-    const [expr, setExpr] = React.useState("");
-    const [prevExpr, setPrevExpr] = React.useState("");
-
-    //TODO
-    const [register, setRegister] = React.useState(0);
-    // TODO
+    const [expr, setExpr] = React.useState<string>("");
+    const [prevExpr, setPrevExpr] = React.useState<string>("");
+    const [register, setRegister] = React.useState<number>(0);
     const [history, setHistory] = React.useState();
 
     // Validity checks for the expression
     const [dotExistInExpr, setDotExistInExpr] = React.useState(false);
     const [parenthesisBalance, setParenthesisBalance] = React.useState(0);
     const [expectValue, setExpectValue] = React.useState(true);
-
-    function valueClickHandler(value: string) {
-        setExpr(expr + value);
-        if (expectValue) {
-            setExpectValue(false);
-        };
-    }
-
-    const signClickHandler = (sign: string) => {
-        if (expectValue && sign !== "-" && sign !== "√") {
-            return;
-        }
-        setExpr(expr + sign);
-        setDotExistInExpr(false);
-        setExpectValue(true);
-    }
     
-    const dotClickHandler = () => {
-        if (!dotExistInExpr) {
-            setExpr(expr + ".");
-            setDotExistInExpr(true);
-        }
-    };
-
-    const values = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
-    const valueButtonProps: ButtonProps[] = values.map((value) => ({
-        className: "valueButton",
+    const valueButtonPropsGenerator = (value: string): ButtonProps => ({
+        type: "value",
         value: value,
-        onClick: () => valueClickHandler(value),
-    }));
+        onClick: () => {
+            setExpr(expr + value);
+            if (expectValue) {
+                setExpectValue(false);
+            };
+        },
+    })
 
     const dotButtonProps: ButtonProps = {
-        type: "valueButton",
+        type: "value",
         value: ".",
-        onClick: () => dotClickHandler(),
+        onClick: () => {
+            if (!dotExistInExpr) {
+                setExpr(expr + ".");
+                setDotExistInExpr(true);
+            }
+        },
     };
     
-    const signs = ["+", "-", "*", "/", "^", "√"];
-    const signButtonProps: ButtonProps[] = signs.map((sign) => ({
-        className: "signButton",
+    // const signs = ["+", "-", "*", "/", "^", "√"];
+    const signButtonPropsGenerator = (sign: string): ButtonProps => ({
+        type: "sign",
         value: sign,
-        onClick: () => signClickHandler(sign),
-    }));
+        onClick: () => {
+            if (expectValue && sign !== "-" && sign !== "√") {
+                return;
+            }
+            setExpr(expr + sign);
+            setDotExistInExpr(false);
+            setExpectValue(true);
+        }
+    });
 
     const percentageClickHandler = () => {
         if (expectValue) {
@@ -73,7 +63,7 @@ const Calculator: React.FC<{}> = () => {
     };
 
     const percentageButtonProps: ButtonProps = {
-        type: "signButton",
+        type: "sign",
         value: "%",
         onClick: () => percentageClickHandler(),
     }
@@ -95,10 +85,44 @@ const Calculator: React.FC<{}> = () => {
     };
     
     const bracketButtonProps: ButtonProps[] = brackets.map((bracket) => ({
-        className: "signButton",
+        type: "sign",
         value: bracket,
         onClick: () => bracketClickHandler(bracket),
     }));
+
+    const memoryAddButtonProps: ButtonProps = {
+        type: "sign",
+        value: "M+",
+        onClick: () => {
+            equalClickHandler();
+            setRegister(register + Number(expr));
+        }
+    }
+
+    const memoryMinusButtonProps: ButtonProps = {
+        type: "sign",
+        value: "M-",
+        onClick: () => {
+            equalClickHandler();
+            setRegister(register - Number(expr));
+        }
+    }
+
+    const memoryRecallButtonProps: ButtonProps = {
+        type: "sign",
+        value: "MR",
+        onClick: () => {
+            setExpr(register.toString());
+        }
+    }
+
+    const memoryClearButtonProps: ButtonProps = {
+        type: "sign",
+        value: "MC",
+        onClick: () => {
+            setRegister(0);
+        }
+    }
 
     const equalClickHandler = () => {
         try {
@@ -111,10 +135,19 @@ const Calculator: React.FC<{}> = () => {
     };
 
     const equalButtonProps: ButtonProps = {
-        type: "equalButton",
+        type: "equal",
         value: "=",
         onClick: () => equalClickHandler(),
     };
+
+    const delButtonProps: ButtonProps = {
+        type: "sign",
+        value: "DEL",
+        onClick: () => {
+            const newExpr = expr.slice(0, -1);
+            setExpr(newExpr);
+        },
+    }
 
     const clearClickHandler = () => {
         setExpr("");
@@ -124,7 +157,7 @@ const Calculator: React.FC<{}> = () => {
     };
 
     const clearButtonProps: ButtonProps = {
-        type: "clearButton",
+        type: "sign",
         value: "C",
         onClick: () => clearClickHandler(),
     }; 
@@ -144,7 +177,7 @@ const Calculator: React.FC<{}> = () => {
                 alignItems: 'center',
             }}
         >
-            <Grid container maxWidth={550}>
+            <Grid container maxWidth={650}>
                 <Grid item xs={12}>
                     <Box 
                         sx={{
@@ -183,44 +216,52 @@ const Calculator: React.FC<{}> = () => {
                             borderRadius: 5,
                         }}
                     >
-                        <Typography component="h1" variant="h6" align="right">{prevExpr}</Typography>
+                        <Box 
+                            sx={{
+                                height: 30
+                            }}
+                        >
+                            <Typography component="h1" variant="h6" align="right">{prevExpr}</Typography>
+                        </Box>
                         <Typography component="h1" variant="h4" align="right">{expr}</Typography>
                     </Paper>
                 </Grid>
                 <Grid container xs={12} sx={{ backgroundColor: "#242d44", marginTop: 3, padding: 3, borderRadius: 5}}>
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...bracketButtonProps[0]} />
+                    <CalcButton {...bracketButtonProps[1]} />
+                    {/* TODO: Get more functionalities to round out the calculator */}
+                    <CalcButton {...bracketButtonProps[0]} />
+                    <CalcButton {...bracketButtonProps[0]} />
+                    <CalcButton {...bracketButtonProps[0]} />
 
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...percentageButtonProps} />
+                    <CalcButton {...signButtonPropsGenerator("√")} />
+                    <CalcButton {...signButtonPropsGenerator("^")} />
+                    <CalcButton {...signButtonPropsGenerator("+")} />
+                    <CalcButton {...delButtonProps} />
 
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...memoryAddButtonProps} />
+                    <CalcButton {...valueButtonPropsGenerator("7")} />
+                    <CalcButton {...valueButtonPropsGenerator("8")} />
+                    <CalcButton {...valueButtonPropsGenerator("9")} />
+                    <CalcButton {...signButtonPropsGenerator("-")} />
 
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...memoryMinusButtonProps} />
+                    <CalcButton {...valueButtonPropsGenerator("4")} />
+                    <CalcButton {...valueButtonPropsGenerator("5")} />
+                    <CalcButton {...valueButtonPropsGenerator("6")} />
+                    <CalcButton {...signButtonPropsGenerator("/")} />
 
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...memoryRecallButtonProps} />
+                    <CalcButton {...valueButtonPropsGenerator("1")} />
+                    <CalcButton {...valueButtonPropsGenerator("2")} />
+                    <CalcButton {...valueButtonPropsGenerator("3")} />
+                    <CalcButton {...signButtonPropsGenerator("*")} />
 
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                        
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
-                    <CalcButton {...equalButtonProps} />
+                    <CalcButton {...memoryClearButtonProps} />
+                    <CalcButton {...valueButtonPropsGenerator("0")} />
+                    <CalcButton {...dotButtonProps} />
+                    <CalcButton {...clearButtonProps} />
                     <CalcButton {...equalButtonProps} />
                 </Grid>
             </Grid>
