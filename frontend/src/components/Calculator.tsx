@@ -2,12 +2,14 @@ import * as React from "react";
 import Screen from "./Screen";
 import ButtonBox from "./ButtonBox";
 import {ButtonProps} from "./Button";
+import Evaluator from "../evaluator/evaluator";
 
 
 const Calculator: React.FC<{}> = () => {
+    const evaluator = new Evaluator();
     // Core state of the calculator
-    const [expr, setExpr] = React.useState("1+2");
-    const [result, setResult] = React.useState("3");
+    const [expr, setExpr] = React.useState("");
+    const [result, setResult] = React.useState("");
 
     //TODO
     const [register, setRegister] = React.useState(0);
@@ -70,13 +72,11 @@ const Calculator: React.FC<{}> = () => {
     // }
 
     const equalClickHandler = () => {
-        let errMsg = "";
-        let res = eval(expr);
-        if (errMsg) {
-            setExpr(errMsg);
-        } else {
-            setResult(result);
-            setExpr(expr + "=");
+        try {
+            let res = evaluator.evaluate(expr);
+            setResult(res.toString());
+        } catch (err: any) {
+            setResult(err.message);
         }
     };
 
@@ -86,11 +86,25 @@ const Calculator: React.FC<{}> = () => {
         onClick: () => equalClickHandler(),
     };
 
+    const clearClickHandler = () => {
+        setExpr("");
+        setResult("");
+        setDotExistInExpr(false);
+        setExpectValue(true);
+    };
+
+    const clearButtonProps: ButtonProps = {
+        className: "clearButton",
+        value: "C",
+        onClick: () => clearClickHandler(),
+    };
+
     const buttons: ButtonProps[] = [
         ...valueButtonProps,
         ...signButtonProps,
         dotButtonProps,
-        equalButtonProps
+        equalButtonProps,
+        clearButtonProps,
     ];
 
 
